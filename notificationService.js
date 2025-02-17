@@ -39,15 +39,15 @@ app.use(Express.json())
  * Demonstrates how you might process or store received data.
  */
 app.post('/receiveData', async ({ body }, res) => {
-    console.log(JSON.stringify(`Reveived request is: ${body}`))
-    return res.send(body)
+  console.log(JSON.stringify(`Reveived request is: ${body}`))
+  return res.send(body)
 })
 
 /**
  * Simple health endpoint for Notification Service.
  */
 app.get('/healthy', (req, res) => {
-    res.send({ status: 'healthy' })
+  res.send({ status: 'healthy' })
 })
 
 /**
@@ -55,8 +55,8 @@ app.get('/healthy', (req, res) => {
  * This will help other servers to make sure that after restart the service is healthy.
  */
 app.listen(3001, () => {
-    redis.set('health:notificationService', 'healthy')
-    console.log('notificationService is up')
+  redis.set('health:notificationService', 'healthy')
+  console.log('notificationService is up')
 })
 
 
