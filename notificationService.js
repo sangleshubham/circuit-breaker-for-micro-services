@@ -2,9 +2,22 @@ import Express from 'express';
 import Redis from 'ioredis';
 const app = Express()
 
+env.config()
+
+const {
+  REDIS_SERVER = "localhost",
+  REDIS_PORT = 6379,
+  REDIS_USERNAME = "default",
+  REDIS_PASSWORD = ""
+} = process.env
+
 const redis = new Redis({
-    host: 'localhost',
-    port: 6379
+  host: REDIS_SERVER,
+  port: Number(REDIS_PORT),
+  redisOptions: {
+    ...(REDIS_USERNAME && { username: REDIS_USERNAME }),
+    ...(REDIS_PASSWORD && { password: REDIS_PASSWORD })
+  }
 })
 
 /**

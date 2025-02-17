@@ -4,17 +4,18 @@
   "main": "service1.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prestart": "bash install_redis.sh",
+    "start": "node healthService.js;node notificationService.js;node authenticationService.js"
   },
   "keywords": [],
   "author": "Shubham Sangle",
   "license": "ISC",
   "description": "The circuit breaker here tracks each service’s health via Redis “up” or “down” messages. If a service is marked “down,” incoming requests are short-circuited immediately (i.e., not sent to the failing service), preventing wasted calls and isolating the failure until the service recovers.",
   "dependencies": {
+    "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "ioredis": "^5.5.0"
   },
-  "devDependencies": {},
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/sangleshubham/circuit-breaker-for-micro-services.git"

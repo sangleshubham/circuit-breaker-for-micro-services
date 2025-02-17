@@ -1,16 +1,31 @@
 import Express from 'express'
 import Redis from 'ioredis'
+import env from 'dotenv'
+
+env.config()
+
+const {
+  REDIS_SERVER = "localhost",
+  REDIS_PORT = 6379,
+  REDIS_USERNAME = "default",
+  REDIS_PASSWORD = ""
+} = process.env
 
 // Create an Express application
 const app = Express()
 
+env.config()
+
 /**
  * Create a Redis client for publishing messages.
  */
-
 const redis = new Redis({
-  host: 'localhost',
-  port: 6379,
+  host: REDIS_SERVER,
+  port: Number(REDIS_PORT),
+  redisOptions: {
+    ...(REDIS_USERNAME && { username: REDIS_USERNAME }),
+    ...(REDIS_PASSWORD && { password: REDIS_PASSWORD })
+  }
 })
 
 /**
@@ -79,9 +94,10 @@ app.get('/updateHealth', async (req, res) => {
 setInterval(() => {
   healthCheck()
   console.log('Health check completed')
-}, 1000) // 1000 ms = 1 second
+}, 5000) // 5000 ms = 5 second
 
 // Start the HealthChecker service on port 3002
-app.listen(3002, () => {
+app.listen(3002, async () => {
+  await healthCheck()
   console.log('Health Service is up on port 3002')
 })
