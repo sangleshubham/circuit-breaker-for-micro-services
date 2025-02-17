@@ -1,8 +1,18 @@
+// Import necessary modules from external libraries
 import Express from 'express'
 import Redis from 'ioredis'
+import env from 'dotenv'
 
+// Load environment variables from .env file into process.env
 env.config()
 
+/**
+ * Destructure environment variables with default values.
+ * - REDIS_SERVER: Hostname or IP where Redis is running (default: "localhost")
+ * - REDIS_PORT: Port number on which Redis is listening (default: 6379)
+ * - REDIS_USERNAME: Redis username (default: "default")
+ * - REDIS_PASSWORD: Redis password (default: "")
+ */
 const {
   REDIS_SERVER = "localhost",
   REDIS_PORT = 6379,
@@ -10,33 +20,36 @@ const {
   REDIS_PASSWORD = ""
 } = process.env
 
+// Create an Express application instance
 const app = Express()
+
+// Add JSON parsing middleware so that req.body can parse JSON
 app.use(Express.json())
+
+/**
+ * Construct the Redis configuration object.
+ * - host: The Redis server hostname or IP
+ * - port: The Redis server port (converted to a number)
+ * - redisOptions: Extra options (username/password) passed to ioredis if they exist
+ */
+const redisConfiguration = {
+  host: REDIS_SERVER,
+  port: Number(REDIS_PORT),
+  ...(REDIS_USERNAME && { username: REDIS_USERNAME }),
+  ...(REDIS_PASSWORD && { password: REDIS_PASSWORD })
+}
+
 
 /**
  * This Redis client will be used for normal queries (like setting values).
  */
-const redis = new Redis({
-  host: REDIS_SERVER,
-  port: Number(REDIS_PORT),
-  redisOptions: {
-    ...(REDIS_USERNAME && { username: REDIS_USERNAME }),
-    ...(REDIS_PASSWORD && { password: REDIS_PASSWORD })
-  }
-})
+const redis = new Redis(redisConfiguration)
 
 /**
  * A separate Redis client for subscribing to channels.
  * It is generally recommended to have a separate connection for subscriptions.
  */
-const redisSubscriber = new Redis({
-  host: REDIS_SERVER,
-  port: Number(REDIS_PORT),
-  redisOptions: {
-    ...(REDIS_USERNAME && { username: REDIS_USERNAME }),
-    ...(REDIS_PASSWORD && { password: REDIS_PASSWORD })
-  }
-})
+const redisSubscriber = new Redis(redisConfiguration)
 
 /**
  * Maintain an in-memory map of known service statuses.

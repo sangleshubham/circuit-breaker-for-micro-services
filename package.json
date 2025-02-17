@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "prestart": "bash install_redis.sh",
-    "start": "node healthService.js;node notificationService.js;node authenticationService.js"
+    "healthService": "node healthService.js",
+    "authenticationService" :"node authenticationService.js",
+    "notificationService" : "node notificationService.js"
   },
   "keywords": [],
   "author": "Shubham Sangle",

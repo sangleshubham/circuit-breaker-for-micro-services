@@ -1,9 +1,17 @@
 import Express from 'express';
 import Redis from 'ioredis';
-const app = Express()
+import env from 'dotenv'
 
+// Load environment variables from .env file into process.env
 env.config()
 
+/**
+ * Destructure environment variables with default values.
+ * - REDIS_SERVER: Hostname or IP where Redis is running (default: "localhost")
+ * - REDIS_PORT: Port number on which Redis is listening (default: 6379)
+ * - REDIS_USERNAME: Redis username (default: "default")
+ * - REDIS_PASSWORD: Redis password (default: "")
+ */
 const {
   REDIS_SERVER = "localhost",
   REDIS_PORT = 6379,
@@ -11,13 +19,14 @@ const {
   REDIS_PASSWORD = ""
 } = process.env
 
+// Create an Express application
+const app = Express()
+
 const redis = new Redis({
   host: REDIS_SERVER,
   port: Number(REDIS_PORT),
-  redisOptions: {
-    ...(REDIS_USERNAME && { username: REDIS_USERNAME }),
-    ...(REDIS_PASSWORD && { password: REDIS_PASSWORD })
-  }
+  ...(REDIS_USERNAME && { username: REDIS_USERNAME }),
+  ...(REDIS_PASSWORD && { password: REDIS_PASSWORD })
 })
 
 /**
