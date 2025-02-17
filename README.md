@@ -99,7 +99,8 @@ To install Redis automatically, you can run the `install_redis.sh` script. Other
 
 3. **Verify services are running**  
    - Check the console logs for messages like “Health Service is up.”  
-   - Test endpoints via a browser or [curl](https://curl.se/). For example, `curl http://localhost:3002/updateHealth` triggers a health check and update the redis.
+   - Test endpoints via a browser or [curl](https://curl.se/). For example, `curl http://localhost:3000/sendDataToNotificationService` triggers a api call to notification service.
+   - If response is correct then the notification service is up. If the service is down the API call will be skipped. 
 
 ---
 
